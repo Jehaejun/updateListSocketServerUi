@@ -81,7 +81,7 @@ public class MainFrame {
 		labelFilePath = new JLabel("File Path : ");
 		gridBagAdd(labelFilePath, 0, 0, 3, 1, 1.0);
 
-		txtFieldFilePath = new JTextField("C:\\update_list_socket_server\\updateList.jar");
+		txtFieldFilePath = new JTextField("C:\\updateListSocket\\updateList.jar");
 		gridBagAdd(txtFieldFilePath, 3, 0, 20, 1, 1.0);
 
 		btnFileOpen = new JButton();
@@ -100,7 +100,7 @@ public class MainFrame {
 		labelInfoPath = new JLabel("Info Path : ");
 		gridBagAdd(labelInfoPath, 0, 1, 3, 1, 1.0);
 
-		txtFieldInfoPath = new JTextField("C:\\update_list_socket_server\\update_data.json");
+		txtFieldInfoPath = new JTextField("C:\\updateListSocket\\update_data.json");
 		gridBagAdd(txtFieldInfoPath, 3, 1, 20, 1, 1.0);
 
 		btnInfoOpen = new JButton();
