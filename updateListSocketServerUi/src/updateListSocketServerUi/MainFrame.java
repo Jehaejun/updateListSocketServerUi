@@ -51,7 +51,7 @@ public class MainFrame {
 
 	public MainFrame() {
 		mainFrame = new JFrame("socket server");
-		mainFrame.setSize(580, 450);
+		mainFrame.setSize(570, 450);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		prepareGUI();
 		setMenuBar();
