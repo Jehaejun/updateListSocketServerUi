@@ -6,20 +6,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class UpdateListSocketServer {
-	private String filePath;
-	private String infoPath;
-
+	private final int _FILE_SOCKET_PORT = 10081;
+	private final int _INFO_SOCKET_PORT = 10080;
 	private ServerSocket fileServerSocket;
 	private ServerSocket infoServerSocket;
 	
-	private final int _FILE_SOCKET_PORT = 10081;
-	private final int _INFO_SOCKET_PORT = 10080;
-
 	private final int _THREAD_CNT = 3;
 	private ExecutorService threadPool;
 	private ExecutorService threadPool2;
 	
-	Thread fileThread;
+	private String filePath;
+	private String infoPath;
 
 	public UpdateListSocketServer(String filePath, String infoPath) throws IOException {
 		this.filePath = filePath;
@@ -51,26 +48,34 @@ public class UpdateListSocketServer {
 	public void setInfoPath(String infoPath) {
 		this.infoPath = infoPath;
 	}
-	
+
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
 	}
-	
+
 	public void run() throws IOException {
 		threadPool = Executors.newFixedThreadPool(_THREAD_CNT);
 		threadPool2 = Executors.newFixedThreadPool(_THREAD_CNT);
 
-		FileSocket fileSocket = new FileSocket(fileServerSocket, filePath);
-		Thread fileThread = new Thread(fileSocket);
-		threadPool.submit(fileThread);
+		if (fileServerSocket.isClosed()) {
+			fileServerSocket = new ServerSocket(_FILE_SOCKET_PORT);
+		}
+		if (infoServerSocket.isClosed()) {
+			infoServerSocket = new ServerSocket(_INFO_SOCKET_PORT);
+		}
 		
+		FileSocket fileSocket = new FileSocket(fileServerSocket, filePath);
+		threadPool.submit(new Thread(fileSocket));
+
 		InfoSocket dateSocket = new InfoSocket(infoServerSocket, infoPath);
-		Thread dateThread = new Thread(dateSocket);
-		threadPool2.submit(dateThread);
+		threadPool2.submit(new Thread(dateSocket));
 	}
 
-	public void destroy() {
+	public void destroy() throws IOException {
 		threadPool.shutdown();
 		threadPool2.shutdown();
+
+		this.fileServerSocket.close();
+		this.infoServerSocket.close();
 	}
 }

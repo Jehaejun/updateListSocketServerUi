@@ -253,11 +253,18 @@ public class MainFrame {
 		btnStopServer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				socketServer.destroy();
-
-				appendLog("server stop");
-				btnRunServer.setEnabled(true);
-				btnStopServer.setEnabled(false);
+				try {
+					socketServer.destroy();
+					
+					appendLog("server stop");
+					btnRunServer.setEnabled(true);
+					btnStopServer.setEnabled(false);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					
+					MainFrame.appendLog(e1);
+				}
 			}
 		});
 	}

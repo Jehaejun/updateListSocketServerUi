@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 import updateListSocketServerUi.MainFrame;
 
@@ -33,12 +34,17 @@ public class FileSocket implements Runnable {
 		}
 		
 		while (true) {
+			if (ss.isClosed()) {
+				break;
+			}
+			
 			try (Socket socket = ss.accept();
 					DataOutputStream dout = new DataOutputStream(
 					new BufferedOutputStream(socket.getOutputStream()));
 					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));) {
 
+				
 				//System.out.printf("file download - client connected: %s%n", socket.getInetAddress());
 				MainFrame.appendLog("file download - client connected: " + socket.getInetAddress());
 
@@ -56,6 +62,9 @@ public class FileSocket implements Runnable {
 				//System.out.println("response message: " + br.readLine()); // 클라이언트 메시지 출력
 				MainFrame.appendLog(socket.getInetAddress() + " => response message: " + br.readLine());
 
+			} catch (SocketException se) {
+				//MainFrame.appendLog("file socket close");
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 				

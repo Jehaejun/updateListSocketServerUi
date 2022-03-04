@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,13 +31,20 @@ public class InfoSocket implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		while (true) {
-			try (Socket socket = ss.accept();) {
+			if (ss.isClosed()) {
+				break;
+			}
+			
+			try (Socket socket = ss.accept()) {
 				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 				MainFrame.appendLog("client connected: " + socket.getInetAddress());
 
 				bw.write(versionData);
 				bw.flush();
+			}  catch (SocketException se) {
+				//MainFrame.appendLog("info socket close");
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 
